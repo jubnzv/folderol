@@ -1,4 +1,4 @@
-open Core
+open IStd
 
 let rec replace_term (u, new_) tm =
   let open Syntax in
@@ -50,8 +50,20 @@ let subst_bound tm =
 
 let () =
   let open Syntax in
+  let open Unify in
+
+  (* Printing *)
   let f1 =
     Quant (Forall, "x", Quant (Forall, "y", Pred ("P", [ Param ("x", []) ])))
   in
   (* ∀x.∀y.P(x) *)
-  Printf.printf "%s\n" (formula_to_string f1)
+  Printf.printf "%s\n" (formula_to_string f1);
+
+  (* Unification *)
+  let f2 = Pred ("f", [ Param ("a", []); Param ("b", []) ])
+  and f3 = Pred ("f", [ Var "a"; Var "b" ]) in
+  Printf.printf "Unifying formulas %s and %s ...\n" (formula_to_string f2) (formula_to_string f3);
+  let env = Env.mk () in
+  match unify env f2 f3 with
+  | Ok env' -> Printf.printf "Result environment:\n%s\n" (Env.to_string env')
+  | Error err -> Printf.printf "Unification error: %s\n" err

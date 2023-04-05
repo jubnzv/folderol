@@ -1,4 +1,4 @@
-open Core
+open IStd
 
 type term =
   | Var of string  (** [Var(N)] is a meta-variable. *)
