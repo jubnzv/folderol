@@ -33,7 +33,8 @@ type formula =
         symbol and [Ti] are terms present by the name of the predicate and
         the list of its arguments. For example, in the [P(x1, x2)] formula
         [P] is an arbitrary non-logical symbol that have its own mean and
-        [x1] and [x2] are its arguments. *)
+        [x1] and [x2] are its arguments. 0-place function symbols are
+        constants. *)
   | Conn of conn * formula list
       (** [Conn(C, Forms)] is a formula with connective [C] and the list of
         formulas [Forms]. Negation is represented as an
@@ -42,6 +43,8 @@ type formula =
       (** [Quant(Q, Var, Form)] is a quantified formula with quantifier [Q],
         bound variable [Var] and the body [Form]. *)
 [@@deriving eq]
+
+let is_pred = function Pred _ -> true | _ -> false
 
 let rec term_to_string = function
   | Var n -> "?" ^ n
@@ -77,3 +80,9 @@ let rec formula_to_string = function
       List.map fs ~f:formula_to_string |> String.concat ~sep
   | Quant (q, v, f) ->
       Printf.sprintf "%s%s.%s" (quant_to_string q) v (formula_to_string f)
+
+let%test "formula_to_string_works_1" =
+  let f1 =
+    Quant (Forall, "x", Quant (Forall, "y", Pred ("P", [ Param ("x", []) ])))
+  in
+  String.equal "∀x.∀y.P(x)" (formula_to_string f1);

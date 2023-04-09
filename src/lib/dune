@@ -1,0 +1,23 @@
+(library
+ (name FolderolLib)
+ (public_name folderol.lib)
+ (libraries core sedlex)
+ (inline_tests)
+ (preprocess
+  (pps sedlex.ppx ppx_let ppx_deriving.eq ppx_inline_test)))
+
+(env
+ (dev
+  (flags
+   ; Make warnings non-fatal
+   (:standard -warn-error -A)))
+ (release
+  (ocamlopt_flags :standard -ccopt -static)))
+
+(menhir
+ (modules parser)
+ (flags ("--dump" "--explain")))
+ ; (flags ("--dump" "--explain" "--trace")))
+
+(ocamllex
+ (modules lexer))

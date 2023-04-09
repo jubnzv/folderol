@@ -9,6 +9,9 @@ module Env : sig
   val mk : unit -> t
   (** Creates a new environment. *)
 
+  val is_empty : t -> bool
+  (** Returns [true] iff [env] is an empty environment. *)
+
   val to_string : t -> string
   (** Prints the environment. *)
 
@@ -21,7 +24,8 @@ end
 
 val unify : Env.t -> formula -> formula -> (Env.t, string) result
 (** Performs the unification of two formulas [f1] and [f2] in the environment
-    [env].
+    [env] and returns the updated environment that contains new found bindings
+    (from variable names to terms).
 
     This means that we need to solve a set of equations from [ts] and [us] over
     the meta-variables in the terms. This equations are considered one at time.

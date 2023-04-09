@@ -12,9 +12,10 @@
 
 (package
   (name folderol)
-  (synopsis "A toy theorem prover")
+  (synopsis "Toy theorem prover")
   (depends
-        (ocaml (>= 4.08))
+        (ocaml (>= 4.14))
         (core :build)
         (menhir (and :build (= 20210929)))
-        (menhirLib (and :build (= 20210929)))))
+        (menhirLib (and :build (= 20210929)))
+        (ppx_inline_test :build)))

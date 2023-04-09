@@ -8,6 +8,9 @@ module Env : sig
   val mk : unit -> t
   (** Creates a new environment. *)
 
+  val is_empty : t -> bool
+  (** Returns [true] iff [env] is an empty environment. *)
+
   val to_string : t -> string
   (** Prints the environment. *)
 
@@ -21,6 +24,7 @@ end = struct
   type t = (variable_name * term) list
 
   let mk () : t = []
+  let is_empty = List.is_empty
 
   let to_string env =
     List.fold_left env ~init:[] ~f:(fun acc (var_name, term) ->
@@ -121,3 +125,14 @@ let unify (env : Env.t) (t : formula) (u : formula) : (Env.t, string) result =
            "Unification supports only atomic formulas but the following are \
             given: %s and %s"
            (formula_to_string t) (formula_to_string u))
+
+let%test "unify_works_1" =
+  let f2 = Pred ("f", [ Param ("a", []); Param ("b", []) ])
+  and f3 = Pred ("f", [ Var "a"; Var "b" ]) in
+  let env = Env.mk () in
+  match unify env f2 f3 with
+  | Ok env' ->
+      String.equal "b = b\na = a" (Env.to_string env')
+  | Error err -> (
+    Printf.printf "Unification error: %s\n" err;
+    false)

@@ -1,8 +1,7 @@
 (executable
  (public_name folderol)
- (libraries core)
- (preprocess
-  (pps ppx_let ppx_deriving.eq)))
+ (libraries folderol.lib)
+ (preprocess (pps ppx_let)))
 
 (env
  (dev
