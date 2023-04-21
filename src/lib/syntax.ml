@@ -67,6 +67,7 @@ let conn_to_string = function
   | CNeg -> "¬"
 
 let rec formula_to_string = function
+  | Pred (p, args) when List.is_empty args -> p
   | Pred (p, args) ->
       List.map args ~f:term_to_string
       |> String.concat ~sep:", " |> Printf.sprintf "%s(%s)" p
@@ -85,4 +86,4 @@ let%test "formula_to_string_works_1" =
   let f1 =
     Quant (Forall, "x", Quant (Forall, "y", Pred ("P", [ Param ("x", []) ])))
   in
-  String.equal "∀x.∀y.P(x)" (formula_to_string f1);
+  String.equal "∀x.∀y.P(x)" (formula_to_string f1)

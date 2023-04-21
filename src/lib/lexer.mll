@@ -17,6 +17,7 @@ rule initial =
   | ","                   { TComma }
   | "."                   { TDot }
   | "?"                   { TQuotation }
+  | "|-"                  { TSeq }
   | "∧" | "&"             { TConj }
   | "∨" | "|"             { TDisj }
   | "→" | "-->"           { TImpl }

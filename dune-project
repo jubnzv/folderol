@@ -6,7 +6,7 @@
 (name folderol)
 (version 0.0.1)
 (authors "Georgiy Komarov")
-(license  MIT)
+(license MIT)
 (source (github jubnzv/folderol))
 (maintainers "Georgiy Komarov <jubnzv@gmail.com>")
 

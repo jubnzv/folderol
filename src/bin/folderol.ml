@@ -6,7 +6,8 @@ let usage_string =
     "Usage: %s [FILENAME]\nRunning without arguments launches the REPL session"
     Caml.Sys.argv.(0)
 
-let run_repl () = ()
+(** Runs interactive REPL *)
+let run_repl () = failwith "run_repl: NYI"
 
 let parse_file f =
   In_channel.with_file f ~f:(fun inx ->
@@ -15,8 +16,9 @@ let parse_file f =
       try Parser.main l lexbuf with e -> Error (Exn.to_string e))
 
 let run_file f =
-  let%bind formula = parse_file f in
-  Syntax.formula_to_string formula |> Printf.printf "%s\n";
+  let%bind gt = parse_file f in
+  Driver.init gt;
+  Driver.run ();
   Ok ()
 
 let handle_error = function

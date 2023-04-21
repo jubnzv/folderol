@@ -5,6 +5,7 @@
 %token TRParen        ")"
 %token TComma         ","
 %token TDot           "."
+%token TSeq           "|-"
 %token TQuotation     "?"
 %token TConj          "∧"
 %token TDisj          "∨"
@@ -18,20 +19,23 @@
 %token <string> TIdLowercase
 %token TEOF
 
-%start <(Syntax.formula, string) result> main
+%start <(Infer.Goaltable.t, string) result> main
 
 %%
 let main :=
-  | f = formula; TEOF; { Ok(f) }
+  | fs = list(formula); TEOF;
+    { Ok(Infer.Goaltable.mk [] fs) }
+  | lhs = list(formula); "|-"; rhs = list(formula); TEOF;
+    { Ok(Infer.Goaltable.mk lhs rhs) }
   | TEOF; { Error("No input formula") }
 
 let formula :=
   | "("; ~ = formula; ")"; <>
   | id = TIdUppercase; ts = option(pred_args);
     { Syntax.Pred(id, ts |> Core.Option.value ~default:[]) }
-  | c = connective; f = formula;
+  | c = unary_connective; f = formula;
     { Syntax.Conn(c, [f]) }
-  | fl = formula; c = connective; fr = formula;
+  | fl = formula; c = bin_connective; fr = formula;
     { Syntax.Conn(c, [fl; fr]) }
   | q = quant; v = TIdLowercase; "."; f = formula;
     { Syntax.Quant(q, v, f) }
@@ -52,12 +56,14 @@ let term :=
 let quotation_var :=
   "?"; v = TIdLowercase; { v }
 
-let connective :=
+let unary_connective :=
+  | TNeg;   { Syntax.CNeg }
+
+let bin_connective :=
   | TConj;  { Syntax.CConj }
   | TDisj;  { Syntax.CDisj }
   | TImpl;  { Syntax.CImpl }
   | TEq;    { Syntax.CEq }
-  | TNeg;   { Syntax.CNeg }
 
 let quant :=
   | TForall; { Syntax.Forall }
